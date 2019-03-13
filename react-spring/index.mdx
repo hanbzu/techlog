@@ -1,0 +1,29 @@
+---
+name: react-spring
+---
+
+import { useSpring, animated, config } from "react-spring";
+import { Playground } from "docz";
+
+# react-spring
+
+useSpring creates a persistent hook that takes raw values and returns animated values, which are later bound to a view.
+
+<Playground>
+  {() => {
+    const [zero, setZero] = React.useState(true);
+    const { number } = useSpring({
+      from: { number: 0 },
+      to: { number: zero ? 0 : 10 },
+      config: config.molasses
+    });
+
+    return (
+      <animated.h1 onClick={() => setZero(!zero)}>
+        {number.interpolate(n => Math.ceil(n))}
+      </animated.h1>
+    );
+
+}}
+
+</Playground>
