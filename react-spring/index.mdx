@@ -7,7 +7,9 @@ import { Playground } from "docz";
 
 # react-spring
 
-useSpring creates a persistent hook that takes raw values and returns animated values, which are later bound to a view.
+## `useSpring` takes raw values and returns animated values, to be bound to a view.
+
+It has two APIs. One basically takes values to be animated `from`, `to`, taking into account that `to` can vary depending on variables like the props of the component. Here, each time you click we toggle what we pass to `to`:
 
 <Playground>
   {() => {
@@ -19,11 +21,51 @@ useSpring creates a persistent hook that takes raw values and returns animated v
     });
 
     return (
-      <animated.h1 onClick={() => setZero(!zero)}>
-        {number.interpolate(n => Math.ceil(n))}
-      </animated.h1>
+      <>
+        <animated.h1>
+          {number.interpolate(n => Math.ceil(n))}
+        </animated.h1>
+        <button onClick={() => setZero(!zero)}>Toggle</button>
+      </>
     );
 
 }}
 
 </Playground>
+
+There's another API we can use:
+
+<Playground>
+  {() => {
+    const [zero, setZero] = React.useState(true);
+    const [{ number }, set] = useSpring(() =>
+      ({ number: 0 , config: config.molasses })
+    );
+
+    return (
+      <>
+        <animated.h1>
+          {number.interpolate(n => Math.ceil(n))}
+        </animated.h1>
+        <button onClick={() => {
+          setZero(!zero)
+          set({ number: !zero ? 0 : 10 })
+        }}>
+          Toggle
+        </button>
+      </>
+    );
+
+}}
+
+</Playground>
+
+And the thing about this other API is that apparently it makes sense when you want to be updating the state of the animation NOT from the props but from some other event.
+
+## `useSprings` works similarly but it manages a list of n things
+
+## `useTrail` is for staggered animations where not all items move at the same time (think of many birds taking flight, some do it earlier, some later)
+
+## `useTransition` is for things that change, enter or leave (remember D3)
+
+## `usChain`, to start a transition after another one (haven't looked much at this one)
